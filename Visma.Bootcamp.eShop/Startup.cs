@@ -5,7 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 using Visma.Bootcamp.eShop.ApplicationCore.DependencyInjection;
+using Visma.Bootcamp.eShop.ApplicationCore.Entities.DTO;
+using Visma.Bootcamp.eShop.ApplicationCore.Infrastructure;
+using Visma.Bootcamp.eShop.ApplicationCore.Infrastructure.Middlewates;
 
 namespace Visma.Bootcamp.eShop
 {
@@ -74,11 +78,48 @@ namespace Visma.Bootcamp.eShop
 
             // custom middlewares here
 
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            SeedProducts(app.ApplicationServices);
+        }
+
+        private void SeedProducts(IServiceProvider provider) 
+        {
+            var cache = provider.GetRequiredService<CacheManager>();
+            var list = new List<ProductDto>
+            {
+                new ProductDto
+                {
+                    ProductId = Guid.Parse("9f540087-e489-4288-81da-4ef7b9734bdb"),
+                    Name = "test product #1",
+                    Description = "test decription #1",
+                    Price = 128.34M
+                },
+                new ProductDto
+                {
+                    ProductId = Guid.Parse("c2457c45-27e8-4d10-b7fe-5925c8a9a163"),
+                    Name = "test product #2",
+                    Description = "test description #2",
+                    Price = 25.99M
+                },
+                new ProductDto
+                {
+                    ProductId = Guid.Parse("7e6710ea-b6aa-4da4-b37d-955133267e00"),
+                    Name = "test product #3",
+                    Description = "test description #3",
+                    Price = 49.99M
+                }
+            };
+
+            foreach(ProductDto item in list)
+            {
+                cache.Set(item);
+            }
         }
     }
 }

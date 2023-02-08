@@ -25,7 +25,7 @@ namespace Visma.Bootcamp.eShop.ApplicationCore.DependencyInjection
         {
             AddAutoMapper(services);
             AddDatabase(services, configuration);
-            //AddLogging(services, environment);
+            AddLogging(services, environment);
             AddServices(services);
             AddCache(services);
 

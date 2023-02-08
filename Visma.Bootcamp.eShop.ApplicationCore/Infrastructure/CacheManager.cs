@@ -28,6 +28,10 @@ namespace Visma.Bootcamp.eShop.ApplicationCore.Infrastructure
             string category = GetCategoryOrThrow(typeof(T));
             if (_cache.TryGetValue(category, out List<T> cachedItems))
             {
+                T existingItem = cachedItems.SingleOrDefault(x => x.Id == item.Id);
+                if (existingItem != null) {
+                    cachedItems.Remove(existingItem);
+                }
                 cachedItems.Add(item);
             }
             else

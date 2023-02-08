@@ -52,36 +52,43 @@ namespace Visma.Bootcamp.eShop.Controllers
             [Required, FromRoute(Name = "basket_id")] Guid? basketId,
             CancellationToken ct)
         {
-            var basketDto = new BasketDto
-            {
-                BasketId = Guid.NewGuid(),
-                Items = new List<ProductDto>
-                {
-                    new ProductDto
-                    {
-                        ProductId = Guid.NewGuid(),
-                        Name = "test product #1",
-                        Description = "test decription #1",
-                        Price = 128.34M
-                    },
-                    new ProductDto
-                    {
-                        ProductId = Guid.NewGuid(),
-                        Name = "test product #2",
-                        Description = "test description #2",
-                        Price = 25.99M
-                    },
-                    new ProductDto
-                    {
-                        ProductId = Guid.NewGuid(),
-                        Name = "test product #3",
-                        Description = "test description #3",
-                        Price = 49.99M
-                    }
-                }
-            };
-
-            return Ok(basketDto);
+        //     var basketDto = new BasketDto
+        //     {
+        //         BasketId = Guid.NewGuid(),
+        //         Items = new List<BasketItemDto>
+        //         {
+        //             new BasketItemDto
+        //             {
+        //                 Product = new ProductDto{
+        //                     ProductId = Guid.NewGuid(),
+        //                     Name = "test product #1",
+        //                     Description = "test decription #1",
+        //                     Price = 128.34M
+        //                 },
+        //                 Quantity = 5
+        // },
+        //             new BasketItemDto{
+        //                 Product = new ProductDto{
+        //                    ProductId = Guid.NewGuid(),
+        //                 Name = "test product #2",
+        //                 Description = "test description #2",
+        //                 Price = 25.99M
+        //                 },
+        //                 Quantity = 3
+        //             },
+        //             new BasketItemDto{
+        //                 Product = new ProductDto{
+        //                    ProductId = Guid.NewGuid(),
+        //                 Name = "test product #3",
+        //                 Description = "test description #3",
+        //                 Price = 49.99M
+        //                 },
+        //                 Quantity = 2
+        //             }
+        //         }
+        //     };
+            var basket = _basketService.Get(basketId);
+            return Ok(basket);
         }
 
         [HttpPut("{basket_id}")]
@@ -98,7 +105,8 @@ namespace Visma.Bootcamp.eShop.Controllers
             [FromBody, Bind] BasketModel model,
             CancellationToken ct)
         {
-            return BadRequest("Not implemented");
+            _basketService.Update(basketId, model);
+            return NoContent();
         }
 
         [HttpDelete("{basket_id}/items/{item_id}")]
@@ -115,7 +123,8 @@ namespace Visma.Bootcamp.eShop.Controllers
             [Required, FromRoute(Name = "item_id")] Guid? itemId,
             CancellationToken ct)
         {
-            return BadRequest("Not implemented");
+            _basketService.DeleteProduct(basketId, itemId);
+            return NoContent();
         }
     }
 }
