@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Visma.Bootcamp.eShop.ApplicationCore.Entities.DTO;
 using Visma.Bootcamp.eShop.ApplicationCore.Entities.Models;
 using Visma.Bootcamp.eShop.ApplicationCore.Entities.Models.Errors;
+using Visma.Bootcamp.eShop.ApplicationCore.Services.Interfaces;
 
 namespace Visma.Bootcamp.eShop.Controllers
 {
@@ -17,6 +18,13 @@ namespace Visma.Bootcamp.eShop.Controllers
     [Route("api/[controller]")]
     public class BasketController : ControllerBase
     {
+        private readonly IBasketService _basketService;
+
+        public BasketController(IBasketService basketService)
+        {
+            _basketService = basketService;
+        }
+
         [HttpPost("{basket_id}/items")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BasketDto))]
         [SwaggerOperation(
@@ -29,7 +37,8 @@ namespace Visma.Bootcamp.eShop.Controllers
             [Bind, FromBody] BasketItemModel model,
             CancellationToken ct)
         {
-            return BadRequest("Not implemented");
+            BasketDto basket = _basketService.AddProduct(basketId, model);
+            return StatusCode(201, basket);
         }
 
         [HttpGet("{basket_id}")]

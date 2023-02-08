@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NSubstitute;
 using Visma.Bootcamp.eShop.ApplicationCore.Entities.Models;
+using Visma.Bootcamp.eShop.ApplicationCore.Services.Interfaces;
 using Visma.Bootcamp.eShop.Controllers;
 using Xunit;
 
@@ -9,16 +11,16 @@ namespace Visma.Bootcamp.eShop.Tests.Controllers
 {
     public class BasketControllerTests
     {
-
+        private IBasketService _basketService;
 
         public BasketControllerTests()
         {
-
+            _basketService = Substitute.For<IBasketService>();
         }
 
         private BasketController CreateBasketController()
         {
-            return new BasketController();
+            return new BasketController(_basketService);
         }
 
         [Fact]
