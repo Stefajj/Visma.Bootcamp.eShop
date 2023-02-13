@@ -49,6 +49,29 @@ namespace Visma.Bootcamp.eShop
                     Description = "Development localhost server - Kestrel",
                     Url = "https://localhost:5001"
                 });
+
+                var securitySchema = new OpenApiSecurityScheme()
+                {
+                    Description = "JWT Auth Bearer Scheme",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference()
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+                var securityRequirement = new OpenApiSecurityRequirement()
+{
+    {
+        securitySchema,
+        new[] {"Bearer"}
+    }
+};
+                c.AddSecurityDefinition("Bearer", securitySchema);
+                c.AddSecurityRequirement(securityRequirement);
             });
 
             services.AddRouting(options => options.LowercaseUrls = true);
@@ -69,6 +92,8 @@ namespace Visma.Bootcamp.eShop
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

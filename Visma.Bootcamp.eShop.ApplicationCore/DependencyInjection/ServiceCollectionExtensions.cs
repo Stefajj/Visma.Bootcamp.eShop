@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
@@ -27,6 +30,19 @@ namespace Visma.Bootcamp.eShop.ApplicationCore.DependencyInjection
             AddServices(services);
             AddCache(services, configuration);
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Token:Key").Value)),
+                            ValidIssuer = configuration.GetSection("Token:Issuer").Value,
+                            ValidateIssuer = true,
+                            ValidateAudience = false
+                        };
+                });
+
             return services;
         }
 
@@ -36,6 +52,7 @@ namespace Visma.Bootcamp.eShop.ApplicationCore.DependencyInjection
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICatalogService, CatalogService>();
             services.AddTransient<IBasketService, BasketService>();
+            services.AddTransient<IAuthService, AuthService>();
         }
 
         #region Infrastructure
