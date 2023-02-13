@@ -77,7 +77,7 @@ namespace Visma.Bootcamp.eShop.Controllers
             return NoContent();
         }
 
-        [HttpDelete("basket_id/items/{item_id}")]
+        [HttpDelete("{basket_id}/items/{item_id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -106,9 +106,12 @@ namespace Visma.Bootcamp.eShop.Controllers
             Tags = new[] { "Order Management" })]
         public async Task<IActionResult> CreateOrderAsync(
             [Required, FromRoute(Name = "basket_id")] Guid? basketId,
+            [FromServices] IOrderService orderService,
             CancellationToken ct)
         {
-            return NotFound();
+            BasketDto basket = await _basketService.GetAsync(basketId.Value, ct);
+            OrderDto dto = await orderService.CreateAsync(basket, ct);
+            return StatusCode(StatusCodes.Status201Created);
         }
     }
 }

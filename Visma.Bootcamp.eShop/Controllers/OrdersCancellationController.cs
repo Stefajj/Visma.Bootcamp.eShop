@@ -33,7 +33,8 @@ namespace Visma.Bootcamp.eShop.Controllers
             [Required, FromRoute(Name = "order_id")] Guid? orderId,
             CancellationToken ct)
         {
-            return BadRequest("Not implemented");
+            _orderService.cancelOrderAsync(orderId, ct);
+            return NoContent();
         }
     }
 }
