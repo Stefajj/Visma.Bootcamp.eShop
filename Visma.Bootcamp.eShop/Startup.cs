@@ -23,6 +23,18 @@ namespace Visma.Bootcamp.eShop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "CorsPolicy",
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:4200", "http://localhost:4200")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -93,7 +105,9 @@ namespace Visma.Bootcamp.eShop
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            app.UseCors("CorsPolicy");
+
+            // app.UseAuthentication();
 
             app.UseAuthorization();
 

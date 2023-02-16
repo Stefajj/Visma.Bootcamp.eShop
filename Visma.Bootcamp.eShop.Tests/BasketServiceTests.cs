@@ -106,5 +106,14 @@ namespace Visma.Bootcamp.eShop.Tests
             //act
             //assert    
         }
+
+        [Test]
+        public async Task DeleteItemAsync_BasketDoesNotExist()
+        {
+            //arrange
+            //act
+            Assert.ThrowsAsync<NotFoundException>(() => _basketService.DeleteItemAsync(Guid.NewGuid(), Guid.NewGuid()));
+            //assert
+        }
     }
 }
